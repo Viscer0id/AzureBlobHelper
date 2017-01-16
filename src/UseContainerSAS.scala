@@ -4,7 +4,7 @@ import com.microsoft.azure.storage.CloudStorageAccount
 import com.microsoft.azure.storage.blob._
 import com.typesafe.config.ConfigFactory
 import org.apache.spark.sql._
-import org.joda.time.{DateTime, DateTimeZone}
+//import org.joda.time.{DateTime, DateTimeZone}
 
 import scala.collection.JavaConversions._
 
@@ -28,17 +28,22 @@ object UseContainerSAS {
     // Create Azure container handles with SAS
     val unProcContainerSAS = unProcAcct.createCloudBlobClient().getContainerReference(AzureBlob.GetContainerSAS(unProcContainer))
 
-    // Create an array of blobs for processing
-    println("Creating array for processing")
-    val blobList = unProcContainerSAS.listBlobs(dataSourceName, true)
-    val sourceBlobs = blobList.map(x => x.asInstanceOf[CloudBlockBlob])
+    try {
+      val blobs = unProcContainerSAS.listBlobs("loco",true)
+      while (blobs.iterator().hasNext) {
+        println(blobs.iterator().next().getUri.toString)
+      }
+    }
+
+    //    val sourceBlobs = blobList.map(x => x.asInstanceOf[CloudBlockBlob])
 
     // List files we are going to process
-    val sourceBlobNames = sourceBlobs
-      .map(row => row.getName)
-      .toArray[String]
-    println("List of files:")
-    println(sourceBlobNames.mkString(System.lineSeparator()))
+    //    val sourceBlobNames = sourceBlobs
+    //      .map(row => row.getName)
+    //      .toArray[String]
+    //    println("List of files:")
+    //    println(sourceBlobNames.mkString(System.lineSeparator()))
+    //  }
   }
 }
 
